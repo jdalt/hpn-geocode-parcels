@@ -42,20 +42,28 @@ function makePopups(feature, layer) {
 function makeMarkers(feature, latlng) {
   var props = feature.properties;
   var myIcon = null;
-  var myColor = "#0f0"
+  var myColor = "#000";
   if (props) {
     var prod = props.products;
     if(prod.contains("Farmers Market")) {
-      myIcon = marketIcon;
+      myColor = "#00f";
     }
-    if(prod.contains("Milk")) {
-      myColor = "#000";
+    if(prod.contains("Cow") || prod.contains("Dairy")) {
+      myColor = "#fff";
+    }
+    if(prod.contains("Pumpkin")) {
+      myColor = "#ffa500";
+    }
+    if(prod.contains("CSA")) {
+      myColor = "#0f0";
+    }
+    if(prod.contains("Wine")) {
+      myColor = "#f00";
+    }
+    if(prod.contains("Beef")) {
+      myColor = "#dedbef";
     }
   }
-  if(myIcon) {
-    return new L.marker(latlng, {icon: myIcon});
-  } else {
-    return new L.circleMarker(latlng, {fillColor: myColor});
-  }
+  return new L.circleMarker(latlng, {fillColor: myColor, fillOpacity: .8, stroke: false});
 }
 
