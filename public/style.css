@@ -1,0 +1,21 @@
+body, html, #map {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+#map {
+  position: relative;
+}
+
+.leaflet-container {
+  cursor: auto;
+}
+
+.leaflet-popup-content h3 {
+  margin: 0;
+}
+
+.italic {
+  font-style: italic;
+}

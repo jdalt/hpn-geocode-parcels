@@ -1,0 +1,27 @@
+{
+  "name": "minnesota_grown",
+  "version": "0.0.1",
+  "description": "Visualization of food and environment in Minnesota",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha",
+    "watch": "watchify app.js -o public/dist/app-dist.js -dv"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "keywords": [
+    "enivornment",
+    "sustainability"
+  ],
+  "author": "Jacob Dalton",
+  "license": "MIT",
+  "dependencies": {
+    "leaflet": "~0.7.1",
+    "express": "~3.4.7",
+    "superagent": "~0.15.7"
+  },
+  "devDependencies": {
+    "mocha": "~1.16.2"
+  }
+}
