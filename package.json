@@ -19,7 +19,9 @@
   "dependencies": {
     "leaflet": "~0.7.1",
     "express": "~3.4.7",
-    "superagent": "~0.15.7"
+    "superagent": "~0.15.7",
+    "angular": "~1.2.10",
+    "underscore": "~1.6.0"
   },
   "devDependencies": {
     "mocha": "~1.16.2"

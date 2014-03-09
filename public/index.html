@@ -10,13 +10,16 @@
     <link rel="stylesheet" href="style.css" />
 
   </head>
-  <body>
+  <body ng-app="capitolCode">
     <div id="container"> 
+      <a href="#">TODO--MAKE CTRL</a>
       <a href="index.html">Minnesota Grown</a> 
       <a href="wild_rice.html">Wild Rice Map</a>
       <a href="community_gardens.html">Community Gardens and Ag Parcels</a>
     </div>
-    <div id="map"></div>
+    <div id="mngrown" ng-controller="mngrownCtrl">
+      <div id="map"></div>
+    </div>
     <script src="dist/app-dist.js"></script>
   </body>
 </html>
