@@ -13,8 +13,35 @@ var L = require('leaflet');
 var request = require('superagent');
 
 var app = angular.module('capitolCode', [])
+.filter('productType', function() {
+  return function(points, mapOptions) {
+    console.log(points);
+    var filteredPoints = [];
+    var selectedTypes = [];
+    for(var i=0; i<mapOptions.length; i++) {
+      if(mapOptions[i].value === true) {
+        selectedTypes.push(mapOptions[i].name);
+      }
+    }
+    console.log(selectedTypes);
+    points.forEach( function(element) {
+      if(_.contains(selectedTypes, element.type)) {
+        filteredPoints.push(element);
+      }
+    });
+    return filteredPoints;
+  }
+})
 .controller('mngrownCtrl', function($scope) {
   var map = L.map('map').setView([44.9833, -93.266730], 7);
+  var optionList = [ "Farmers Market", "CSA", "Farm", "Christmas Tree" ];
+  $scope.mapOptions = [];
+  optionList.forEach( function(item) {
+    $scope.mapOptions.push({
+      name: item,
+      value: true
+    });
+  });
 
   L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; 2014 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
@@ -70,8 +97,18 @@ var app = angular.module('capitolCode', [])
     }
     var marker = new L.circleMarker(latlng, {fillColor: myColor, fillOpacity: .8, stroke: false});
     marker.markerIndex = markers.length;
+    marker.products = props.products;
     markers.push(marker);
-    console.log(markers);
     return marker;
   }
+
+  $scope.pointDeath = function() {
+    console.log("trashing all geoJson points");
+    console.log(curPointLayer);
+    map.removeLayer(curPointLayer);
+    // curPointLayer.removeFrom(map);
+    curPointLayer = null;
+    curPointLayer = L.layerGroup([markers[0], markers[1]]);
+    curPointLayer.addTo(map);
+  };
 });
