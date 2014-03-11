@@ -18,11 +18,12 @@
       <a href="community_gardens.html">Community Gardens and Ag Parcels</a>
     </div>
     <div id="mngrown" ng-controller="mngrownCtrl">
-      <div ng-repeat="mapOption in mapOptions">
+      <span ng-repeat="mapOption in mapOptions">
         <input id="map-opt-{{ $index }}" type="checkbox" ng-model="mapOption.value" />
         <label for="map-opt-{{ $index }}">{{ mapOption.name }}</label>
-      </div>
-      <button ng-click="pointDeath()">Remove Points</button>
+      </span>
+      <button ng-click="selectAll()">Select All</button>
+      <button ng-click="deselectAll()">Deselect All</button>
       <div id="map"></div>
     </div>
     <script src="dist/app-dist.js"></script>

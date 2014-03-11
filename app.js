@@ -16,7 +16,6 @@ var app = angular.module('capitolCode', [])
 .filter('productType', function() {
   return function(points, mapOptions) {
     console.log(points);
-    var filteredPoints = [];
     var selectedTypes = [];
     for(var i=0; i<mapOptions.length; i++) {
       if(mapOptions[i].value === true) {
@@ -24,24 +23,21 @@ var app = angular.module('capitolCode', [])
       }
     }
     console.log(selectedTypes);
+    var filteredPoints = [];
     points.forEach( function(element) {
-      if(_.contains(selectedTypes, element.type)) {
-        filteredPoints.push(element);
+      for(var i=0; i<selectedTypes.length; i++) {
+        if(element.products.contains(selectedTypes[i])) {
+          filteredPoints.push(element);
+          break;
+        }
       }
     });
     return filteredPoints;
   }
 })
-.controller('mngrownCtrl', function($scope) {
+.controller('mngrownCtrl', function($scope, productTypeFilter) {
   var map = L.map('map').setView([44.9833, -93.266730], 7);
-  var optionList = [ "Farmers Market", "CSA", "Farm", "Christmas Tree" ];
   $scope.mapOptions = [];
-  optionList.forEach( function(item) {
-    $scope.mapOptions.push({
-      name: item,
-      value: true
-    });
-  });
 
   L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; 2014 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
@@ -58,11 +54,11 @@ var app = angular.module('capitolCode', [])
         pointToLayer: makeMarkers
       });
       curPointLayer.addTo(map);
+      $scope.$apply()
     }
   });
 
   function makePopups(feature, layer) {
-    console.log(feature);
     var props = feature.properties;
     if (props) {
       layer.bindPopup("<h3>" + props.name + "</h3><div class='italic'>" + props.products + "</div><div>" + props.description + "</div>");
@@ -70,6 +66,7 @@ var app = angular.module('capitolCode', [])
   }
 
   var markers = [];
+  var allCategories = [];
   function makeMarkers(feature, latlng) {
     var props = feature.properties;
     var myIcon = null;
@@ -98,17 +95,45 @@ var app = angular.module('capitolCode', [])
     var marker = new L.circleMarker(latlng, {fillColor: myColor, fillOpacity: .8, stroke: false});
     marker.markerIndex = markers.length;
     marker.products = props.products;
+    var products = props.products.split(",");
+    products.forEach( function(product) {
+      if(!_.contains(allCategories, product)) {
+        allCategories.push(product);
+        addOption(product);
+      }
+    });
     markers.push(marker);
     return marker;
   }
 
-  $scope.pointDeath = function() {
-    console.log("trashing all geoJson points");
+  $scope.$watch('mapOptions', function() {
+    console.log(allCategories);
     console.log(curPointLayer);
     map.removeLayer(curPointLayer);
-    // curPointLayer.removeFrom(map);
     curPointLayer = null;
-    curPointLayer = L.layerGroup([markers[0], markers[1]]);
+    var filteredPoints = productTypeFilter(markers, $scope.mapOptions);
+    curPointLayer = L.layerGroup(filteredPoints);
     curPointLayer.addTo(map);
+  }, true);
+
+  $scope.selectAll = function() {
+    $scope.mapOptions.forEach( function(item) {
+      item.value = true;
+    });
   };
+
+  $scope.deselectAll = function() {
+    $scope.mapOptions.forEach( function(item) {
+      item.value = false;
+    });
+  };
+
+  function addOption(item) {
+    $scope.mapOptions.push({
+      name: item,
+      value: true
+    });
+  }
+
 });
+
