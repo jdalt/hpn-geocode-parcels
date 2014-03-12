@@ -19,3 +19,8 @@ body, html,#mngrown, #map {
 .italic {
   font-style: italic;
 }
+
+.typeChoose {
+  width: 49%;
+  float: left;
+}
