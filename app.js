@@ -15,7 +15,6 @@ var request = require('superagent');
 var app = angular.module('capitolCode', [])
 .filter('productType', function() {
   return function(points, mapOptions) {
-    console.log(points);
     var selectedTypes = [];
     for(var i=0; i<mapOptions.length; i++) {
       if(mapOptions[i].value === true) {
@@ -128,12 +127,14 @@ var app = angular.module('capitolCode', [])
     });
   };
 
+  $scope.reportOptions = function() {
+    console.log(JSON.stringify(allCategories));
+  };
+
   function addOption(item) {
     $scope.mapOptions.push({
       name: item,
       value: true
     });
   }
-
 });
-
