@@ -1,5 +1,4 @@
-[
-"Vegetables": [
+{ "Vegetables": [ 
   "Asparagus",
   "Beets",
   "Broccoli",
@@ -166,4 +165,4 @@
   "Garden Space (for lease/sale)",
   "Workshops/Classes/Presentations"
   ]
-]
+}

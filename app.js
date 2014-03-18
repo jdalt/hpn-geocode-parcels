@@ -45,17 +45,31 @@ var app = angular.module('capitolCode', [])
   }).addTo(map);
   L.Icon.Default.imagePath = 'images';
 
-  var curPointLayer;
-  request.get('minnesota_grown.geojson').end(function(res) {
+
+  var sortCategories;
+  request.get('categoryList.json').end(function(res) {
+    console.log(res);
     if(res.text) {
-      curPointLayer = L.geoJson(JSON.parse(res.text), {
-        onEachFeature: makePopups,
-        pointToLayer: makeMarkers
-      });
-      curPointLayer.addTo(map);
-      $scope.$apply()
+      sortCategories = JSON.parse(res.text);
+      console.log("Sort Categories");
+      console.log(sortCategories);
     }
+    getData();
   });
+
+  var curPointLayer;
+  function getData() {
+    request.get('minnesota_grown.geojson').end(function(res) {
+      if(res.text) {
+        curPointLayer = L.geoJson(JSON.parse(res.text), {
+          onEachFeature: makePopups,
+          pointToLayer: makeMarkers
+        });
+        curPointLayer.addTo(map);
+        $scope.$apply()
+      }
+    });
+  }
 
   function makePopups(feature, layer) {
     var props = feature.properties;
