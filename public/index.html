@@ -18,21 +18,27 @@
       <a href="community_gardens.html">Community Gardens and Ag Parcels</a>
     </div>
     <div id="mngrown" ng-controller="mngrownCtrl">
-      <div class="typeChoose">
-        <span ng-repeat="mapOption in mapOptions| filter:{value: true}">
-          <input id="map-opt-t-{{ $index }}" type="checkbox" ng-model="mapOption.value" />
-          <label for="map-opt-t-{{ $index }}">{{ mapOption.name }}</label>
-        </span>
+      <div id="categories">
+        <div>
+          <button ng-click="selectAll()">Select All</button>
+          <button ng-click="deselectAll()">Deselect All</button>
+        </div>
+        <div class="master-category" ng-repeat="(categoryName, categoryItems) in categoryList">
+          <h4> 
+            <span ng-click="selected=!selected" ng-init="selected=false">{{categoryName}}</span>
+            <span class="icon" ng-click="selectAll(categoryItems)">O</span>
+            <span class="icon" ng-click="deselectAll(categoryItems)">X</span>
+          </h4>
+          <div class="map-options" ng-if="selected">
+            <div ng-repeat="mapOption in categoryItems">
+              <label>{{ mapOption.name }}
+                <input type="checkbox" ng-model="mapOption.value" />
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="typeChoose">
-        <span ng-repeat="mapOption in mapOptions| filter:{value: false}">
-          <input id="map-opt-f-{{ $index }}" type="checkbox" ng-model="mapOption.value" />
-          <label for="map-opt-f-{{ $index }}">{{ mapOption.name }}</label>
-        </span>
-      </div>
-      <button ng-click="selectAll()">Select All</button>
-      <button ng-click="deselectAll()">Deselect All</button>
-      <button ng-click="reportOptions()">JSON Cats</button>
+      <br>
       <div id="map"></div>
     </div>
     <script src="dist/app-dist.js"></script>

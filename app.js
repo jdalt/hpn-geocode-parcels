@@ -46,13 +46,23 @@ var app = angular.module('capitolCode', [])
   L.Icon.Default.imagePath = 'images';
 
 
-  var sortCategories;
+  $scope.categoryList = {};
   request.get('categoryList.json').end(function(res) {
     console.log(res);
     if(res.text) {
-      sortCategories = JSON.parse(res.text);
+      var sortCategories = JSON.parse(res.text);
       console.log("Sort Categories");
       console.log(sortCategories);
+      var mapOptionList = {};
+      _.each(sortCategories, function(list, categoryName) {
+        console.log("Sort category: " + categoryName);
+        mapOptionList[categoryName] = [];
+        list.forEach( function(product) {
+          mapOptionList[categoryName].push(addOption(product));
+        });
+      });
+      console.log(mapOptionList);
+      $scope.categoryList = mapOptionList;
     }
     getData();
   });
@@ -79,7 +89,6 @@ var app = angular.module('capitolCode', [])
   }
 
   var markers = [];
-  var allCategories = [];
   function makeMarkers(feature, latlng) {
     var props = feature.properties;
     var myIcon = null;
@@ -90,7 +99,7 @@ var app = angular.module('capitolCode', [])
         myColor = "#00f";
       }
       if(prod.contains("Cow") || prod.contains("Dairy")) {
-        myColor = "#fff";
+        myColor = "#444";
       }
       if(prod.contains("Pumpkin")) {
         myColor = "#ffa500";
@@ -102,25 +111,18 @@ var app = angular.module('capitolCode', [])
         myColor = "#f00";
       }
       if(prod.contains("Beef")) {
-        myColor = "#dedbef";
+        myColor = "#787878";
       }
     }
     var marker = new L.circleMarker(latlng, {fillColor: myColor, fillOpacity: .8, stroke: false});
     marker.markerIndex = markers.length;
     marker.products = props.products;
     var products = props.products.split(",");
-    products.forEach( function(product) {
-      if(!_.contains(allCategories, product)) {
-        allCategories.push(product);
-        addOption(product);
-      }
-    });
     markers.push(marker);
     return marker;
   }
 
   $scope.$watch('mapOptions', function() {
-    console.log(allCategories);
     console.log(curPointLayer);
     map.removeLayer(curPointLayer);
     curPointLayer = null;
@@ -129,26 +131,34 @@ var app = angular.module('capitolCode', [])
     curPointLayer.addTo(map);
   }, true);
 
-  $scope.selectAll = function() {
-    $scope.mapOptions.forEach( function(item) {
+  $scope.selectAll = function(list) {
+    if(!list) {
+      list = $scope.mapOptions;
+    }
+    list.forEach( function(item) {
       item.value = true;
     });
   };
 
-  $scope.deselectAll = function() {
-    $scope.mapOptions.forEach( function(item) {
+  $scope.deselectAll = function(list) {
+    if(!list) {
+      list = $scope.mapOptions;
+    }
+    list.forEach( function(item) {
       item.value = false;
     });
   };
 
   $scope.reportOptions = function() {
-    console.log(JSON.stringify(allCategories));
+    console.log(JSON.stringify($scope.mapOptions));
   };
 
   function addOption(item) {
-    $scope.mapOptions.push({
+    var item = {
       name: item,
       value: true
-    });
+    };
+    $scope.mapOptions.push(item);
+    return item;
   }
 });
