@@ -1,0 +1,37 @@
+"Bees/Pollen",
+"Beeswax Products",
+"Honey",
+
+"Firewood",
+"Spruce Tops",
+"Lumber",
+
+"Hazelnuts",
+"Maple Syrup",
+"Kefir",
+"Mushrooms",
+"Popcorn",
+"Soup/Soup Mixes",
+"Nutritional Supplements",
+
+"Lotion",
+"Soap",
+"Soy Candles",
+"Yarn",
+
+
+"Hops for Brewing",
+"Vinegars/Cooking Oils",
+"Wine",
+"Wine Making",
+
+
+"CSA - Community Supported Ag Farm",
+"Farmers Market",
+"Winter Farmers Market",
+
+"Gift Shop",
+"Native Crafts",
+"Fundraiser Products",
+"Garden Space (for lease/sale)",
+"Workshops/Classes/Presentations",
