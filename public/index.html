@@ -31,8 +31,11 @@
           </h4>
           <div class="map-options" ng-if="selected">
             <div ng-repeat="mapOption in categoryItems">
-              <label>{{ mapOption.name }}
+              <label 
+                ng-mouseenter="highlightMapOption(mapOption)" 
+                ng-mouseleave="clearHighlight(mapOption)">
                 <input type="checkbox" ng-model="mapOption.value" />
+                {{ mapOption.name }}
               </label>
             </div>
           </div>

@@ -3,6 +3,7 @@ body, html,#mngrown, #map {
   height: 100%;
   padding: 0;
   margin: 0;
+  font-family: sans-serif;
 }
 #map {
   position: relative;
@@ -22,7 +23,7 @@ body, html,#mngrown, #map {
 
 
 .icon {
-  font-size: 50%;
+  font-size: 70%;
 }
 
 #categories {
@@ -53,3 +54,8 @@ body, html,#mngrown, #map {
   box-shadow: 5px 5px 5px #444
 }
 
+.map-options label {
+  background-color: yellow;
+  display: inline-block;
+  width: 100%;
+}

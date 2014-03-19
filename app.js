@@ -16,6 +16,8 @@ var app = angular.module('capitolCode', [])
 .filter('productType', function() {
   return function(points, mapOptions) {
     var selectedTypes = [];
+    // TODO: make this a separate filter that feeds into this one, or change to
+    // map.
     for(var i=0; i<mapOptions.length; i++) {
       if(mapOptions[i].value === true) {
         selectedTypes.push(mapOptions[i].name);
@@ -34,7 +36,18 @@ var app = angular.module('capitolCode', [])
     return filteredPoints;
   }
 })
-.controller('mngrownCtrl', function($scope, productTypeFilter) {
+.filter('pointOptions', function() {
+  return function(mapOptions, point) {
+    var validOptions = [];
+    mapOptions.forEach( function(option) {
+      if(point.products.contains(option.name)) {
+        validOptions.push(option);
+      }
+    });
+    return validOptions;
+  }
+})
+.controller('mngrownCtrl', function($scope, productTypeFilter, pointOptionsFilter) {
   var map = L.map('map').setView([44.9833, -93.266730], 7);
   $scope.mapOptions = [];
 
@@ -64,6 +77,10 @@ var app = angular.module('capitolCode', [])
       console.log(mapOptionList);
       $scope.categoryList = mapOptionList;
     }
+    _.each($scope.mapOptions, function(option, idx) {
+      option.colorPower = getHexSequence(idx);
+      option.color = getPaddedHex(option.colorPower);
+    });
     getData();
   });
 
@@ -92,44 +109,90 @@ var app = angular.module('capitolCode', [])
   function makeMarkers(feature, latlng) {
     var props = feature.properties;
     var myIcon = null;
-    var myColor = "#000";
-    if (props) {
-      var prod = props.products;
-      if(prod.contains("Farmers Market")) {
-        myColor = "#00f";
-      }
-      if(prod.contains("Cow") || prod.contains("Dairy")) {
-        myColor = "#444";
-      }
-      if(prod.contains("Pumpkin")) {
-        myColor = "#ffa500";
-      }
-      if(prod.contains("CSA")) {
-        myColor = "#0f0";
-      }
-      if(prod.contains("Wine")) {
-        myColor = "#f00";
-      }
-      if(prod.contains("Beef")) {
-        myColor = "#787878";
-      }
-    }
-    var marker = new L.circleMarker(latlng, {fillColor: myColor, fillOpacity: .8, stroke: false});
+    var cats = pointOptionsFilter($scope.mapOptions, props);
+    // TODO: build colors at the category level
+    var myColor = buildColor(cats);
+    var marker = new L.circleMarker(latlng, {fillColor: myColor, fillOpacity: .7, stroke: false});
     marker.markerIndex = markers.length;
     marker.products = props.products;
+    marker.baseColor = myColor;
     var products = props.products.split(",");
     markers.push(marker);
     return marker;
   }
 
+  function buildColor(options) {
+    var colorValue = 0;
+    options.forEach( function(option) {
+      colorValue = colorValue | Math.pow(2, option.colorPower);
+    });
+    return getHexPadded(colorValue);
+  }
+
   $scope.$watch('mapOptions', function() {
+    $scope.filterMap($scope.mapOptions);
+  }, true);
+
+  $scope.filterMap = function(options) {
     console.log(curPointLayer);
     map.removeLayer(curPointLayer);
     curPointLayer = null;
-    var filteredPoints = productTypeFilter(markers, $scope.mapOptions);
+    var filteredPoints = productTypeFilter(markers, options);
     curPointLayer = L.layerGroup(filteredPoints);
     curPointLayer.addTo(map);
-  }, true);
+  }
+
+  $scope.highlightMapOption = function(option) {
+    console.log("option!!! :" + option);
+    // TODO: use filter that doesn't filter by true false on value else click
+    // will lock color. Ideally change productTypeFilter to accept already
+    // fitlered options (create a filter to feed that if needed).
+    var filteredPoints = productTypeFilter(markers, [option]);
+    filteredPoints.forEach( function(point) {
+      point.setStyle({ fillColor: "yellow", fillOpacity: 1.0});
+      point.bringToFront();
+    });
+  }
+
+  $scope.clearHighlight = function(option) {
+    console.log("option!!! :" + option);
+    var filteredPoints = productTypeFilter(markers, [option]);
+    filteredPoints.forEach( function(point) {
+      point.setStyle({ fillColor: point.baseColor, fillOpacity: .7});
+    });
+  }
+
+  function getHexSequence(i) {
+    var pow = (i) % 24;
+    var pow2 = (i) % 48;
+    if(pow != pow2) {
+      pow = 23 - pow;
+    }
+    return pow;
+  }
+
+  function getHexPadded(intValue) {
+    var nakedHex = intValue.toString(16);
+    var padding = 6 - nakedHex.length;
+    var pad = "";
+    _.times(padding, function() { pad = pad + "0"; });
+    return "#" + pad + nakedHex;
+  }
+
+  function getPaddedHex(pow) {
+    var nakedHex = Math.pow(2,pow).toString(16);
+    var padding = 6 - nakedHex.length;
+    var pad = "";
+    _.times(padding, function() { pad = pad + "0"; });
+    return "#" + pad + nakedHex;
+  }
+
+  $scope.getColor = function(obj) {
+    return {
+      backgroundColor: obj.color
+    }
+  };
+
 
   $scope.selectAll = function(list) {
     if(!list) {
