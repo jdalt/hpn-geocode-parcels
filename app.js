@@ -58,6 +58,14 @@ var app = angular.module('capitolCode', [])
   }).addTo(map);
   L.Icon.Default.imagePath = 'images';
 
+  // // TODO: make not suck; doesn't work with angular...
+  // var info = L.control();
+  // info.onAdd = function (map) {
+  //   this._div = L.DomUtil.create('div', 'stuff'); 
+  //   this._div.innerHTML = '<button class="btn-mini btn-success" ng-click="selectAll()">Select All</button><button class="btn-mini btn-inverse" ng-click="deselectAll()">Deselect All</button>';
+  //   return this._div;
+  // };
+  // info.addTo(map);
 
   $scope.categoryList = {};
   request.get('categoryList.json').end(function(res) {

@@ -5,7 +5,11 @@ body, html,#mngrown, #map {
   margin: 0;
   font-family: sans-serif;
 }
+#mngrown {
+  height: 90%;
+}
 #map {
+  height: 97%;
   position: relative;
 }
 
@@ -26,21 +30,38 @@ body, html,#mngrown, #map {
   font-size: 70%;
 }
 
+#container {
+  height: 1%;
+}
+
 #categories {
-  height: 50px;
-  padding: 15px;
+  height: 7%;
+  padding: 1%;
   overflow: visible;
+  background-color: #006400;
+  /* background-color: #FF7F2A; */
 }
 
 .master-category {
   float: left;
-  width: 200px;
+  width: 170px;
   position: relative;
 }
 
 .master-category h4 {
-  margin-bottom: 5px;
+  width: 80%;
+  margin: 0;
 }
+
+.title {
+  padding-right: 10px;
+}
+
+.collection-buttons {
+  width: 80px;
+  float: left;
+}
+
 
 .map-options {
   position: absolute;
@@ -50,12 +71,11 @@ body, html,#mngrown, #map {
   width: 250px;
   padding: 10px;
   border: 1px solid black;
-  border-radius: 7px;
   box-shadow: 5px 5px 5px #444
 }
 
 .map-options label {
-  background-color: yellow;
   display: inline-block;
+  font-weight: bold;
   width: 100%;
 }

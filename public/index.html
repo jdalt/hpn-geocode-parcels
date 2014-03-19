@@ -6,28 +6,27 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
     <link rel="stylesheet" href="leaflet.css" />
     <link rel="stylesheet" href="style.css" />
 
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
   </head>
   <body ng-app="capitolCode">
-    <div id="container"> 
-      <a href="#">TODO--MAKE CTRL</a>
-      <a href="index.html">Minnesota Grown</a> 
-      <a href="wild_rice.html">Wild Rice Map</a>
-      <a href="community_gardens.html">Community Gardens and Ag Parcels</a>
-    </div>
     <div id="mngrown" ng-controller="mngrownCtrl">
       <div id="categories">
-        <div>
-          <button ng-click="selectAll()">Select All</button>
-          <button ng-click="deselectAll()">Deselect All</button>
+        <div class="collection-buttons">
+          <button class="btn-mini btn-success" ng-click="selectAll()">Select All</button>
+          <button class="btn-mini btn-inverse" ng-click="deselectAll()">Deselect All</button>
         </div>
-        <div class="master-category" ng-repeat="(categoryName, categoryItems) in categoryList">
-          <h4> 
-            <span ng-click="selected=!selected" ng-init="selected=false">{{categoryName}}</span>
-            <span class="icon" ng-click="selectAll(categoryItems)">O</span>
-            <span class="icon" ng-click="deselectAll(categoryItems)">X</span>
+        <div class="master-category" ng-repeat="(categoryName, categoryItems) in categoryList"
+          ng-mouseenter="selected=true" ng-mouseleave="selected=false">
+          <h4 class="btn"> 
+            <span class="title">{{categoryName}}</span><br>
+            <span class="icon-ok" ng-click="selectAll(categoryItems)"></span>
+            <span class="icon-remove" ng-click="deselectAll(categoryItems)"></span>
           </h4>
           <div class="map-options" ng-if="selected">
             <div ng-repeat="mapOption in categoryItems">
@@ -41,8 +40,12 @@
           </div>
         </div>
       </div>
-      <br>
       <div id="map"></div>
+      <div id="container"> 
+        <a href="index.html">Minnesota Grown</a> 
+        <a href="wild_rice.html">Wild Rice Map</a>
+        <a href="community_gardens.html">Community Gardens and Ag Parcels</a>
+      </div>
     </div>
     <script src="dist/app-dist.js"></script>
   </body>
