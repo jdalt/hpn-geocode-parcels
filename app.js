@@ -51,7 +51,7 @@ var app = angular.module('capitolCode', [])
   var map = L.map('map').setView([44.9833, -93.266730], 7);
   $scope.mapOptions = [];
 
-  L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+  L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; 2014 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
     key: 'BC9A493B41014CAABB98F0471D759707',
     styleId: 22677
