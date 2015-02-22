@@ -17,16 +17,21 @@
   <body ng-app="hpnGeoCode">
     <div id="hpn-parcel" ng-controller="hpnGeoCtrl">
       <div id="categories">
-        <button ng-click="animate()">Animate</button>
-        <input type="range" min="0" max="1" step=".005" ng-model="mapTime" />
-        <button ng-click="logMap()">Log Map</button>
+      </div>
+      <div id="parcel-info">
+        <button ng-click="animate()">Play</button>
+        <input type="range" min="0" max="1" step=".005" ng-model="mapTime" /><br>
         <select ng-init="parcelKey = 'EMV_TOTAL'" ng-model="parcelKey">
           <option value="EMV_LAND">Land Estimated Value</option>
           <option value="EMV_BLDG">Buildings Estimated Value</option>
           <option value="EMV_TOTAL">Total Estimated Value</option>
           <option value="TAX_CAPAC">Tax Capacity</option>
           <option value="TOTAL_TAX">Total Tax</option>
-        </select>
+        </select><br>
+        <div ng-repeat="(parcelKey, parcelProp) in curParcelProps">
+          <div ng-if="parcelProp"> {{ parcelKey }}: {{ parcelProp }} </div>
+        </div>
+        <button ng-click="logMap()">Log Map</button><br>
       </div>
       <div id="map"></div>
     </div>

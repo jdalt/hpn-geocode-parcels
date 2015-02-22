@@ -57,8 +57,10 @@ var app = angular.module('hpnGeoCode', [])
   function makePopups(feature, layer) {
     var props = feature.properties;
     if (props) {
-      // layer.bindPopup("<h3>" + props.OWNER_NAME + "</h3><div class='italic'> {{ currentValue(" + props.PIN + ") }}</div>");
-      layer.bindPopup("<h3>" + props.OWNER_NAME + "</h3><div class='italic'>" + props.EMV_TOTAL + "</div>");
+      layer.on('click', function(e) {
+        $scope.curParcelProps = e.target.feature.properties;
+        $scope.$apply();
+      });
     }
     layer.setStyle({fillOpacity: .8, color: "#000", weight: 1});
   }
@@ -82,7 +84,6 @@ var app = angular.module('hpnGeoCode', [])
     }, true);
   }
   getGeometryData().then(function() { getYearProps(2011); }).then(function() { getYearProps(2002); }).then(startTheWatch).then(function(){ interpolateParcelColor(0.0);});
-
 
   function interpolateParcelColor(mag) {
     parcelGeometry.eachLayer(function(parcel) {
