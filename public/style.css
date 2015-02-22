@@ -1,11 +1,11 @@
-body, html,#mngrown, #map {
+body, html,#hpn-parcel, #map {
   width: 100%;
   height: 100%;
   padding: 0;
   margin: 0;
   font-family: sans-serif;
 }
-#mngrown {
+#hpn-parcel {
   height: 90%;
 }
 #map {
