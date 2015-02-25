@@ -18,53 +18,6 @@ var app = angular.module('hpnGeoCode', [])
   }).addTo(map);
   L.Icon.Default.imagePath = 'images';
 
-  var parcelGeometry;
-  function getGeometryData() {
-    var deferred = Q.defer();
-    request.get('hpn2011.geojson').end(function(err, res) {
-      if(err || !res.text) {
-        deferred.reject(new Error(err));
-      } else {
-        parcelGeometry = L.geoJson(JSON.parse(res.text), {
-          onEachFeature: makePopups
-        });
-        parcelGeometry.addTo(map);
-        $scope.$apply();
-        deferred.resolve();
-      }
-    });
-    return deferred.promise;
-  }
-
-  var featProps = {};
-  function getYearProps(year) {
-    var deferred = Q.defer();
-    request.get('hpn' + year + '.geojson').end(function(err, res) {
-      if(err || !res.text) {
-        deferred.reject(new Error(err));
-      } else {
-        var rawGeo = JSON.parse(res.text);
-        featProps[year] = {};
-        _.each(rawGeo.features, function(item) {
-          featProps[year][item.properties.PIN] = item.properties;
-        });
-        deferred.resolve();
-      }
-    });
-    return deferred.promise;
-  }
-
-  function makePopups(feature, layer) {
-    var props = feature.properties;
-    if (props) {
-      layer.on('click', function(e) {
-        $scope.curParcelProps = e.target.feature.properties;
-        $scope.$apply();
-      });
-    }
-    layer.setStyle({fillOpacity: .8, color: "#000", weight: 1});
-  }
-
   $scope.animate = function() {
     $scope.mapTime = 0;
     var intervalKey = setInterval(function() {
@@ -83,7 +36,6 @@ var app = angular.module('hpnGeoCode', [])
       interpolateParcelColor($scope.mapTime);
     }, true);
   }
-  getGeometryData().then(function() { getYearProps(2011); }).then(function() { getYearProps(2002); }).then(startTheWatch).then(function(){ interpolateParcelColor(0.0);});
 
   function interpolateParcelColor(mag) {
     parcelGeometry.eachLayer(function(parcel) {
@@ -125,6 +77,70 @@ var app = angular.module('hpnGeoCode', [])
   $scope.logMap = function() {
     console.log(map.getCenter());
     console.log(map.getZoom());
+    var bnd = map.getBounds();
+
+    function g(bnd) {
+      return [bnd.lng, bnd.lat];
+    }
+    var poly = [[
+      g(bnd.getNorthWest()),
+      g(bnd.getNorthEast()),
+      g(bnd.getSouthEast()),
+      g(bnd.getSouthWest()),
+      g(bnd.getNorthWest())
+    ]]
+    console.log(JSON.stringify(poly));
+    getGeoData(poly).then(getProps).then(startTheWatch).then(function(){ interpolateParcelColor(0.0);});
+  }
+
+  function createLayer(feature, layer) {
+    var props = feature.properties;
+    if (props) {
+      layer.on('click', function(e) {
+        $scope.curParcelProps = featProps[2011][e.target.feature.properties.PIN];
+        $scope.$apply();
+      });
+    }
+    layer.setStyle({fillOpacity: .8, color: "#000", weight: 1});
+  }
+
+  var parcelGeometry;
+  function getGeoData(coords) {
+    var deferred = Q.defer();
+    request.get('/geo/' + JSON.stringify(coords)).end(function(err, res) {
+      if(err || !res.text) {
+        deferred.reject(new Error(err));
+      } else {
+        parcelGeometry = L.geoJson(JSON.parse(res.text), {
+          onEachFeature: createLayer
+        });
+        parcelGeometry.addTo(map);
+        $scope.$apply();
+        deferred.resolve(parcelGeometry.getLayers());
+      }
+    });
+    return deferred.promise;
+  }
+
+  var featProps = {};
+  function getProps(parcelLayers) {
+    var deferred = Q.defer();
+    var pins = _.map(parcelLayers, function(parcel) {
+      return parcel.feature.properties.PIN;
+    });
+    request.get('/props/' + JSON.stringify(pins)).end(function(err, res) {
+      if(err || !res.text) {
+        deferred.reject(new Error(err));
+      } else {
+        var propArray = JSON.parse(res.text);
+        featProps[2011] = {};
+        _.each(propArray, function(prop) {
+          featProps[2011][prop._id] = prop;
+        });
+        deferred.resolve(featProps[2011]);
+      }
+    });
+    return deferred.promise;
   }
 
 });

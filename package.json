@@ -22,7 +22,8 @@
     "superagent": "~0.15.7",
     "angular": "~1.2.10",
     "underscore": "~1.6.0",
-    "q": "~1.2.0"
+    "q": "~1.2.0",
+    "monk": "~0.9.1"
   },
   "devDependencies": {
     "mocha": "~1.16.2"
