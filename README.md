@@ -1,1 +1,1 @@
-Animate teh parcels.
+Animate the parcels.
